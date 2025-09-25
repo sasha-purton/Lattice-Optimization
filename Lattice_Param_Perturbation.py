@@ -7,21 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import ArrayLike
 
-with MPRester(api_key="<api key") as mpr:
-    structure = mpr.get_structure_by_material_id("mp-22862")
-
-# perform symmetry finding and construct conventional cell
-sga = SpacegroupAnalyzer(structure)
-conventional_structure = sga.get_conventional_standard_structure()
-
-# plot XRD pattern
-calculator = XRDCalculator(wavelength="CuKa")
-pattern = calculator.get_pattern(conventional_structure)
-ax = calculator.get_plot(conventional_structure)
-for line in ax.lines:
-    line.set_color("blue")
-
-
 def perturb_lattice(struct, perturbation: ArrayLike, inplace: bool = True) -> Structure:
     """Apply a perturbation to lattice vector lengths.
 
@@ -43,5 +28,20 @@ def perturb_lattice(struct, perturbation: ArrayLike, inplace: bool = True) -> St
     struct.lattice = new_lattice
     return struct
 
-calculator.get_plot(perturb_lattice(conventional_structure, [1,1,3], False), annotate_peaks="fit", ax=ax)
+
+with MPRester(api_key="<api key") as mpr:
+    structure = mpr.get_structure_by_material_id("mp-22862")
+
+# perform symmetry finding and construct conventional cell
+sga = SpacegroupAnalyzer(structure)
+conventional_structure = sga.get_conventional_standard_structure()
+
+# plot XRD pattern
+calculator = XRDCalculator(wavelength="CuKa")
+pattern = calculator.get_pattern(conventional_structure)
+ax = calculator.get_plot(conventional_structure)
+for line in ax.lines:
+    line.set_color("blue")
+
+calculator.get_plot(perturb_lattice(conventional_structure, 1, False), ax=ax)
 plt.show()
