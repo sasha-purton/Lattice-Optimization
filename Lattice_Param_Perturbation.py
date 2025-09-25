@@ -29,7 +29,7 @@ def perturb_lattice(struct, perturbation: ArrayLike, inplace: bool = True) -> St
     return struct
 
 
-with MPRester(api_key="<api key") as mpr:
+with MPRester(api_key="<api key>") as mpr:
     structure = mpr.get_structure_by_material_id("mp-22862")
 
 # perform symmetry finding and construct conventional cell
