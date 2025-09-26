@@ -20,10 +20,10 @@ def perturb_lattice(struct, perturbation: ArrayLike, inplace: bool = True) -> St
     Returns:
         Structure: self if inplace=True else new structure with perturbation applied.
     """
-    old_lattice = struct._lattice.matrix
+    old_lattice = struct.lattice.matrix
     norms = np.linalg.norm(old_lattice, axis=1)
-    perturbation_matrix = (np.array(perturbation) / norms)[:,np.newaxis] * old_lattice
-    new_lattice = Lattice(old_lattice + perturbation_matrix)
+    perturbation_matrix = (1+ np.array(perturbation) / norms) * np.eye(3)
+    new_lattice = Lattice(np.dot(old_lattice.T, perturbation_matrix).T)
     struct = struct if inplace else struct.copy()
     struct.lattice = new_lattice
     return struct
